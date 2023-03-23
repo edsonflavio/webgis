@@ -20,4 +20,4 @@ until PGPASSWORD=${POSTGRES_PASSWORD} psql -h "$host" -U ${POSTGRES_USER} -P "pa
   sleep 1
 done
 
->&2 echo "GeoNode databases are up - executing command"
+>&2 echo "PostgreSQL databases are up - executing command"
