@@ -1,0 +1,102 @@
+version: '3.9'
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    restart: always
+    environment:
+      POSTGRES_DB: ${PG_DBNAME}
+      POSTGRES_PORT: ${PG_PORT}
+      POSTGRES_USER: ${PG_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-postgres}
+      POSTGRES_DATA: ${PG_DATA:-/dados/postgres}
+    env_file:
+      - .env
+      - secrets.env
+    volumes:
+      - db_data:${PG_DATA:-/dados/postgres}
+    networks:
+      - backend
+ #   labels:
+ #     - "traefik.enable=false"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - backend
+      - frontend
+  web:
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    image: efsouza/webgis:django_app-ufpr.v01
+    env_file:
+      - .env
+      - secrets.env
+    environment:
+      POSTGRES_HOST: ${PG_HOSTNAME}
+      POSTGRES_DB: ${PG_DBNAME}
+      POSTGRES_PORT: ${PG_PORT}
+    command: >
+        bash -c "
+                apt-get update && \
+                apt-get install -y inetutils-ping iproute2 && \
+                ping -c 5 db 
+                "
+    depends_on:
+      - db
+      - nginx
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+    volumes:
+      - .:/code
+      - static:/static
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.myapp.rule=Host(`myapp.com`)"
+#      - "traefik.http.routers.myapp.entrypoints=websecure"
+#      - "traefik.http.routers.myapp.tls=true"
+#      - "traefik.http.routers.myapp.tls.certresolver=default"
+#      - "traefik.http.services.myapp.loadbalancer.server.port=8000"
+
+#  traefik:
+#    image: traefik:latest
+#    restart: always
+#    command:
+#      - "--api.insecure=true"
+#      - "--providers.docker=true"
+#      - "--providers.docker.exposedbydefault=false"
+#      - "--entrypoints.websecure.address=:443"
+#      - "--certificatesresolvers.default.acme.email=admin@myapp.com"
+#      - "--certificatesresolvers.default.acme.storage=/letsencrypt/acme.json"
+#      - "--certificatesresolvers.default.acme.httpchallenge.entrypoint=web"
+#    ports:
+#      - "8080:80"
+#      - "8443:443"
+#    volumes:
+#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+#      - "./letsencrypt:/letsencrypt"
+#    networks:
+#      - backend
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.traefik.rule=Host(`traefik.myapp.com`)"
+#      - "traefik.http.routers.traefik.entrypoints=websecure"
+#      - "traefik.http.routers.traefik.tls=true"
+#      - "traefik.http.routers.traefik.tls.certresolver=default"
+#      - "traefik.http.routers.traefik.service=api@internal"
+#      - "traefik.http.middlewares.traefik-auth.basicauth.users=user:$$apr1$$NTZlu2gT$$Jd0mTzs8icTHWYCHvC.Ty0"
+#      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+
+networks:
+  backend:
+  frontend:
+volumes:
+  db_data:
+  static:
