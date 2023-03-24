@@ -32,7 +32,7 @@ POSTGRES_DBNAME=os.getenv("PG_DBNAME", "postgres")
 #DEBUG = True
 DEBUG=os.getenv("DEBUG_MODE", "True")
 
-ALLOWED_HOSTS = ['web', '*']
+ALLOWED_HOSTS = ['django_app', 'localhost', '200.17.210.138', '*']
 
 # Application definition
 

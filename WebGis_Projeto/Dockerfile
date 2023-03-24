@@ -1,4 +1,4 @@
-FROM efsouza/webgis:django_base-ufpr.v01 
+FROM efsouza/webgis:base_ufpr-latest 
 ENV PROJECT=GIS_Project
 ENV VIRTUAL_ENV_PATH=/opt/venv/$PROJECT
 LABEL br.ufpr.image.authors="Edson Flavio de Souza <edson.flavio@ufpr.br>"

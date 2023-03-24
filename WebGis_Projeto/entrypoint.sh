@@ -2,7 +2,7 @@
 
 . /opt/venv/GIS_Project/bin/activate
 
-./wait-for-database db
+./wait-for-database.sh ${PG_HOSTNAME}
 
 python manage.py migrate --no-input
 python manage.py collectstatic --no-input
