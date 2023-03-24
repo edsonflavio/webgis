@@ -48,8 +48,8 @@ services:
     depends_on:
       - db
       - webproxy
-    ports:
-      - "8000"
+#    ports:
+#      - "8000"
     networks:
       - backend
     volumes:
