@@ -29,22 +29,22 @@ services:
       - backend
       - frontend
   django_app:
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile
-    image: efsouza/webgis:webgis_ufpr-latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #    image: efsouza/webgis:webgis_ufpr-latest
     env_file:
       - .env
     environment:
       POSTGRES_HOST: ${PG_HOSTNAME}
       POSTGRES_DB: ${PG_DBNAME}
       POSTGRES_PORT: ${PG_PORT}
-    command: >
-        bash -c "
-                apt-get update && \
-                apt-get install -y inetutils-ping iproute2 && \
-                ping -c 5 db 
-                "
+#    command: >
+#        bash -c "
+#                apt-get update && \
+#                apt-get install -y inetutils-ping iproute2 && \
+#                ping -c 5 db 
+#                "
     depends_on:
       - db
       - webproxy
