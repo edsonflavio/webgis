@@ -12,6 +12,18 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from os import environ
+
+env = environ.Env()
+environ.env.read_env()
+
+#Ler a variáveis usando environ
+#POSTGRES_HOST=env('POSTGRES_HOST)
+#POSTGRES_PORT=env('PG_PORT')
+#POSTGRES_USERNAME=env('PG_USERNAME')
+#POSTGRES_USER_PASSWORD=env('PG_PASSWORD')
+#POSTGRES_DBNAME=env('PG_DBNAME')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,6 +39,7 @@ POSTGRES_PORT=os.getenv("PG_PORT", "5432")
 POSTGRES_USERNAME=os.getenv("PG_USERNAME", "postgres")
 POSTGRES_USER_PASSWORD=os.getenv("PG_PASSWORD", "postgres")
 POSTGRES_DBNAME=os.getenv("PG_DBNAME", "postgres")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
