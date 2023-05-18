@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     volumes:
-      - db_data:${PG_DATA:-/dados/postgres}
+      - /volumes/servicos/db_data:${PG_DATA:-/dados/postgres}
     networks:
       - backend
   webproxy:
@@ -20,7 +20,7 @@ services:
     restart: always
 #    build: ../nginx
     volumes:
-      - static:/static
+      - /volumes/servicos/static:/static
     ports:
       - "80:80"
     depends_on:
@@ -32,7 +32,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    #    image: efsouza/webgis:webgis_ufpr-latest
+    #image: efsouza/webgis:webgis_ufpr-latest
     env_file:
       - .env
     environment:
@@ -54,10 +54,10 @@ services:
       - backend
     volumes:
       - .:/code
-      - static:/static
+      - /volumes/servicos/static:/static
 networks:
   backend:
   frontend:
-volumes:
-  db_data:
-  static:
+    #volumes:
+    #db_data:
+    #static:

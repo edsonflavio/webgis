@@ -7,7 +7,6 @@ Como utilizar este repositório para inicializar seu projeto Django de desenvovi
 
 <code>
 $ mkdir -p ~/webgis
-$ cd ~/webgis 
 $ git clone https://github.com/edsonflavio/webgis.git webgis
 $ cd webgis/WebGIS_Projeto
 </code>

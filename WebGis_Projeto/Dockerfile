@@ -1,4 +1,5 @@
-FROM efsouza/webgis:base_ufpr-latest 
+FROM python-ufpr-base:1.0
+#FROM efsouza/webgis:base_ufpr-latest 
 ENV PROJECT=GIS_Project
 ENV VIRTUAL_ENV_PATH=/opt/venv/$PROJECT
 LABEL br.ufpr.image.authors="Edson Flavio de Souza <edson.flavio@ufpr.br>"
@@ -13,6 +14,7 @@ COPY . /code/
 WORKDIR /code
 RUN    . $VIRTUAL_ENV_PATH/bin/activate && \
     pip install --upgrade pip && \
+    pip install wheel numpy GDAL=="$(gdal-config --version).*" && \
     pip install -r requirements.txt
     
 

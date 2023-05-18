@@ -14,8 +14,8 @@ from pathlib import Path
 import os
 from os import environ
 
-env = environ.Env()
-environ.env.read_env()
+#env = environ.Env()
+#environ.env.read_env()
 
 #Ler a variáveis usando environ
 #POSTGRES_HOST=env('POSTGRES_HOST)

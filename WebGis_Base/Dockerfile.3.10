@@ -1,4 +1,5 @@
-FROM python:3.9-bullseye
+FROM python:3.10-bullseye
+#FROM python:3.11.2-bullseye
 ENV PROJECT=GIS_Project
 ENV VIRTUAL_ENV_PATH=/opt/venv/$PROJECT
 LABEL br.ufpr.image.authors="Edson Flavio de Souza <edson.flavio@ufpr.br>"
@@ -17,7 +18,15 @@ RUN apt-get update && apt-get upgrade -y && \
                    gdal-bin \
                    gdal-data \
                    python3-gdal \
-                   postgis && \
+                   postgis  \
+		   python-apt-common \
+		   libgdal28 \
+		   libgdal-dev \
+		   python3-apt \
+		   python-apt-common \
+		   libgirepository1.0-dev \
+		   libdbus-1-dev \
+	           python-wheel-common && \   
     apt autoremove -y
 RUN pwd && mkdir -p $VIRTUAL_ENV_PATH && ls -la $VIRTUAL_ENV_PATH && \
     python3 -m venv $VIRTUAL_ENV_PATH && \

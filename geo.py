@@ -7,7 +7,7 @@ def distance_d(LaA, LaB, LoA, LoB):
  
     LoA = radians(LoA)  
     LoB = radians(LoB)  
-    LaA= radians(LaA)  
+    LaA = radians(LaA)  
     LaB = radians(LaB) 
     # The "Haversine formula" is used.
     D_Lo = LoB - LoA 
