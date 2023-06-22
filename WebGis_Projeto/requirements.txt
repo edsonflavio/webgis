@@ -41,7 +41,7 @@ platformdirs==3.1.1
 postgis==1.0.4
 psycopg2-binary==2.9.5
 PyGObject==3.42.1
-PyJWT==2.3.0
+PyJWT==2.4.0
 pyparsing==2.4.7
 #python-apt==2.4.0
 #python-apt==0.7.8
