@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /volumes/servicos/db_data:${PGDATA:-/var/lib/postgresql/data}
+      - ${PG_VOLUME:-/volumes/servicos/db_data}:${PGDATA:-/var/lib/postgresql/data}
     networks:
       - backend
   webproxy:

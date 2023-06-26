@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 # Create your models here.
 
 class TipoOcorrencias(models.Model):
@@ -22,3 +21,4 @@ class Ocorrencia(models.Model):
     oco_dataAlteracao = models.DateTimeField(auto_now=True)
     oco_descricaoOcorrencia = models.CharField(max_length=120)
     oco_ipAddress = models.GenericIPAddressField()
+    oco_tipoOcorrencia = models.ForeignKey(TipoOcorrencias, on_delete=models.CASCADE, null=False)

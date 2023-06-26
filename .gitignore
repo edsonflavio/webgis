@@ -1,3 +1,4 @@
+.env
 ./WebGis_Projeto/WebGis/migrations/__pycache__/*.pyc
 ./WebGis_Projeto/WebGis/__pycache__/*.pyc
 ./WebGis_Projeto/GIS_Project/__pycache__/*.pyc

@@ -1,4 +1,4 @@
-FROM python39-base:1.0
+FROM projeto_base:latest
 #FROM efsouza/webgis:base_ufpr-latest 
 ENV PROJECT=GIS_Project
 ENV VIRTUAL_ENV_PATH=/opt/venv/$PROJECT
