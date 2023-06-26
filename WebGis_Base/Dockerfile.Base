@@ -1,4 +1,4 @@
-FROM projeto_base:latest
+FROM python-ufpr-base:1.0 as projeto_webgis
 #FROM efsouza/webgis:base_ufpr-latest 
 ENV PROJECT=GIS_Project
 ENV VIRTUAL_ENV_PATH=/opt/venv/$PROJECT
@@ -12,9 +12,9 @@ LABEL vendor="Universidade Federal do Parana \
 COPY . /code/
 #Define o diretorio de trabalho do projeto
 WORKDIR /code
-RUN . $VIRTUAL_ENV_PATH/bin/activate
-#Expoe a porta 8000 para acesso externo
-EXPOSE 8000
-#Inicia o servidor Django
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-ENTRYPOINT ["sh", "entrypoint.sh"]
+#RUN apt install -y gdal-bin gdal-data python3-gdal libgdal28 libgdal-dev
+RUN apt install -y gdal-bin gdal-data libgdal-dev python-dbus-dev libgirepository1.0-dev
+RUN . $VIRTUAL_ENV_PATH/bin/activate && \
+    pip install --upgrade pip && \
+    pip install wheel dbus-python numpy GDAL=="$(gdal-config --version).*" && \
+    pip install -r requirements.txt

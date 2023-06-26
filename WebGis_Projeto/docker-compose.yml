@@ -8,11 +8,11 @@ services:
       POSTGRES_PORT: ${PG_PORT}
       POSTGRES_USER: ${PG_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${PG_PASSWORD:-postgres}
-      POSTGRES_DATA: ${PG_DATA:-/dados/postgres}
+      POSTGRES_DATA: ${PGDATA:-/var/lib/postgresql/data}
     env_file:
       - .env
     volumes:
-      - /volumes/servicos/db_data:${PG_DATA:-/dados/postgres}
+      - /volumes/servicos/db_data:${PGDATA:-/var/lib/postgresql/data}
     networks:
       - backend
   webproxy:
@@ -28,6 +28,20 @@ services:
     networks:
       - backend
       - frontend
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.23.0
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /volumes/servicos/geoserver_datadir:/opt/geoserver_data
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
   django_app:
     build:
       context: .

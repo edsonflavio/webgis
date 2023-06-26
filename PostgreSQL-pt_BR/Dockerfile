@@ -1,4 +1,4 @@
-FROM postgres:9.6-bullseye
+FROM postgres:15.3-bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 RUN /bin/sh -c "apt-get update -y && apt-get install locales-all -y && apt-get clean -y && \
     apt-get autoremove --purge -y && \
