@@ -1,6 +1,0 @@
-FROM projeto_base
-#Expoe a porta 8000 para acesso externo
-EXPOSE 8000
-#Inicia o servidor Django
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-ENTRYPOINT ["sh", "entrypoint.sh"]
