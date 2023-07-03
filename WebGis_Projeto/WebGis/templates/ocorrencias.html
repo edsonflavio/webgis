@@ -1,0 +1,21 @@
+<!-- templates/meu_app/coordenadas.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulário de Coordenadas</title>
+</head>
+<body>
+    <h1>Formulário de Coordenadas</h1>
+    <form method="POST" action="{% url 'ocorrencia_form' %}">
+        {% csrf_token %}
+        <label for="latitude">Latitude:</label>
+        <input type="text" name="latitude" required>
+        <br><br>
+        <label for="longitude">Longitude:</label>
+        <input type="text" name="longitude" required>
+        <br><br>
+        <input type="submit" value="Salvar">
+    </form>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!-- templates/WebGis/home.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa Interativo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 360px; width: 620px;"></div>
+    <script>
+        var map = L.map('map').setView([-25.45, -49.23], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    </script>
+</body>
+</html>
