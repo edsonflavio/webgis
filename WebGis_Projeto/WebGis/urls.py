@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 
 from WebGis import views
 from WebGis.views import IndexTemplateView, RegistroOcorrenciaView, ListaServicos, ListaCategorias, ListaRegistros
@@ -16,4 +18,4 @@ urlpatterns = [
     path('categorias', ListaCategorias.as_view(), name='lista-categorias'),
     path('registros', ListaRegistros.as_view(), name='lista-registros'),
     path('ocorrencia', RegistroOcorrenciaView.as_view(), name='ocorrencia' ),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -16,7 +16,7 @@
                 <th>Data Alteração</th>
                 <th>Endereço IP</th>
                 <th>Nome da Categoria</th>
-                <th>Descrição</th>
+                <th>Descrição da Categoria</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,8 @@
                     <td>{{ categoria.toc_dataCadastro }}</td>
                     <td>{{ categoria.toc_dataAlteracao }}</td>
                     <td>{{ categoria.toc_ipAddress }}</td>
-                    <td>{{ categoria.toc_tipOcorrencia }}</td>
+                    <td>{{ categoria.toc_tipoOcorrencia }}</td>
+                    <td>{{ categoria.toc_descOcorrencia }}</td>
                 </tr>
             {% endfor %}
         
