@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ReporteUFPR - Conte pra gente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-rc.1/leaflet.css" />
+    <style>
+        #map {
+            height: 800px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ReporteUFPR - Sistema Voluntário de Colaboração na UFPR</h1>
+    <h2>Aqui você pode colaborar com a Comunidade Universitária informando problemas e dificuldades encontradas no seu dia a dia na UFPR</h2>
+    <div id="map"></div>
+<!--
+    <form method="post" action="{% url 'ocorrencia' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Salvar">
+    </form>
+-->
+    <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-rc.1/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([-25.45246 , -49.23398], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        map.on('click', function(e) {
+            var latitudeInput = document.getElementById('id_latitude');
+            var longitudeInput = document.getElementById('id_longitude');
+            latitudeInput.value = e.latlng.lat;
+            longitudeInput.value = e.latlng.lng;
+            latitudeInput.value = latitudeInput.value.replace(",",".");
+            longitudeInput.value = longitudeInput.value.replace(",",".");
+        });
+    </script>
+</body>
+</html>

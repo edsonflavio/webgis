@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'GIS_Project',
     'WebGis',
 ]
 
@@ -70,11 +71,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'GIS_Project.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'GIS_Project' /  'WebGis' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

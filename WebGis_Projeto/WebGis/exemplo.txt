@@ -1,0 +1,138 @@
+**index.html**
+
+    {% load static %}
+<!--To load leaflet links-->
+{% load leaflet_tags%}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Interactive Map - Leaflet JS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!--Leaflet js and css links respectively, no need to add manaul links as we already installed django-leaflet-->
+  {% leaflet_js%}
+  {% leaflet_css%}
+
+  <!--To load shapefile from database-->
+  <script src="{% static 'leaflet.ajax.js' %}"></script>
+
+  <!--To load css file-->
+  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+  <!--To load jquery-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script>
+    let mymap = L.map('map', {
+      center: [27.6866, 83.4323],  //map is zoomed directly to given  cordinate [28.394, 84.1240]
+      zoom: 14                     //this is cool hai guys
+    });
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', //osm tile layer and copyright are generated
+      maxZoom: 18,
+      id: 'mapbox.streets',
+
+    }).addTo(mymap);
+
+    //trying to click on any location and getting neighbouring rooms
+
+
+    let myLocation = L.layerGroup().addTo(mymap);
+    let roomsLocations = L.layerGroup().addTo(mymap);
+    //mymap.addEventListener("click", mapClick);
+
+    function mapClick(e) {
+      myLocation.clearLayers();
+      L.marker(e.latlng).addTo(myLocation);
+    }
+
+    mymap.addEventListener("click", cordinateClick);
+    function cordinateClick(e) {
+      let clickCoords = e.latlng;
+      var lat = clickCoords.lat;
+      var lng = clickCoords.lng;
+      console.log(lat,lng);
+
+      //ajax call
+      $.ajax({
+        url: "{% url 'roomsfound' %}",
+        method: 'GET',
+
+        data: {
+          room_lat: JSON.stringify(lat),
+          room_lng: JSON.stringify(lng)
+        },
+        success: function (data) {
+
+          var datasets = new L.GeoJSON.AJAX("{% url 'roomsfound' %}", { //where district is name for shapefile datasets
+            onEachFeature: function (feature, layer) {
+            }
+          });
+          //roomsLocations.clearLayers();
+          datasets.addTo(mymap);
+        }
+      });
+    }
+**My models.py
+
+    from django.db import models
+from django.contrib.gis.db import models
+from django.db.models import Manager as GeoManager
+# Create your models here.
+
+class finded_rooms(models.Model):
+    name=models.CharField(max_length=20)
+    koordinate=models.PointField(srid=4326)
+    room_rate=models.IntegerField()
+    des=models.TextField() 
+    objects = GeoManager()
+    
+def __unicode__(self):                #constructor
+        return self.name
+
+**My urls.py.py**
+
+    from django.conf.urls import include 
+from .views import index,rooms_datasets
+from django.urls import path
+from .models import finded_rooms
+
+urlpatterns= [
+   
+    path('', index.as_view(), name = 'index'),
+    path('findrooms', rooms_datasets, name="roomsfound") 
+    
+    ]
+
+**My views.py**
+
+    from django.shortcuts import render
+from django.views.generic import TemplateView
+from django.core.serializers import serialize
+from django.http import HttpResponse
+from .models import finded_rooms
+from django.contrib.gis.measure import D 
+from django.contrib.gis.geos import Point
+
+#Shows directly homepage
+class index(TemplateView):
+    template_name= 'index.html'
+    
+def rooms_datasets(request):
+    selected_lat = request.GET.get('room_lat')
+    selected_lng = request.GET.get('room_lng') 
+  
+    print(selected_lat)
+    print(selected_lng)
+    
+    radius = 70
+    user_location = Point(selected_lat, selected_lng,srid=4326) 
+    print(user_location)    
+    rooms = serialize('geojson', finded_rooms.objects.filter(koordinate__distance_lt=(user_location, D(m=radius))))  #here koordinate is where all pointfield cordinates are stored 
+    return HttpResponse(rooms,content_type='json')

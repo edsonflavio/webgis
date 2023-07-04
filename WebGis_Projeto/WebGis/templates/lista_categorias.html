@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista todos as Categorias disponíveis</title>
+</head>
+<body>
+    <h1>Lista de Categorias Cadastradas</h1>
+ 
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuário</th>
+                <th>Data Registro</th>
+                <th>Data Alteração</th>
+                <th>Endereço IP</th>
+                <th>Nome da Categoria</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %} 
+                <tr>
+                    <td>{{ categoria.id }}</td>
+                    <td>{{ categoria.toc_usuario }}</td>
+                    <td>{{ categoria.toc_dataCadastro }}</td>
+                    <td>{{ categoria.toc_dataAlteracao }}</td>
+                    <td>{{ categoria.toc_ipAddress }}</td>
+                    <td>{{ categoria.toc_tipOcorrencia }}</td>
+                </tr>
+            {% endfor %}
+        
+        </tbody>
+    </table>
+</body>
+</html>
