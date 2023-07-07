@@ -11,24 +11,24 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Nome da Categoria</th>
+                <th>Descrição da Categoria</th>
                 <th>Usuário</th>
                 <th>Data Registro</th>
                 <th>Data Alteração</th>
                 <th>Endereço IP</th>
-                <th>Nome da Categoria</th>
-                <th>Descrição da Categoria</th>
             </tr>
         </thead>
         <tbody>
             {% for categoria in categorias %} 
                 <tr>
                     <td>{{ categoria.id }}</td>
+                    <td>{{ categoria.toc_tipoOcorrencia }}</td>
+                    <td>{{ categoria.toc_descOcorrencia }}</td>
                     <td>{{ categoria.toc_usuario }}</td>
                     <td>{{ categoria.toc_dataCadastro }}</td>
                     <td>{{ categoria.toc_dataAlteracao }}</td>
                     <td>{{ categoria.toc_ipAddress }}</td>
-                    <td>{{ categoria.toc_tipoOcorrencia }}</td>
-                    <td>{{ categoria.toc_descOcorrencia }}</td>
                 </tr>
             {% endfor %}
         

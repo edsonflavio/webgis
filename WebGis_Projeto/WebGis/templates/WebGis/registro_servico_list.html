@@ -1,0 +1,43 @@
+<!-- meu_app/registro_servico_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title class="center">ReporteUFPR - Lista de Registros de Serviço</title>
+  <!-- Adicionando os arquivos CSS do Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Adicionando os arquivos JS do Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>Lista de Registros de Serviço</h1>
+    <ul>
+        <table class="table table-striped">
+            <thead class="thead-dark"> Registros de Serviços</thead>
+            <th scope="col">ID</th>
+            <th scope="col">Serviço Demandado</th>
+            <th scope="col">Data do Registro</th>
+            <th scope="col">Data da Ocorrência</th>
+            <th scope="col">IP do Usuário</th>
+            <th scope="col">Foto</th>
+        </thead>
+        <tbody>
+
+        {% for registro_servico in registro_servicos %}
+        <tr>
+            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.id }}</a></td>
+            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.servico }}</a></td>
+            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_registro }}</a></td>
+            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_alteracao }}</a></td>
+            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.ip_origem }}</a></td>
+            <td><figure class="figure"> <img src="{{ registro_servico.foto.url }}" class="figure-img img-fluid rounded" alt="{{ registro_servico.servico }}">
+                    <figcaption class="figure-caption">A caption for the above image.</figcaption>
+                </figure>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </ul>
+</body>
+</html>

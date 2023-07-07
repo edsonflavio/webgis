@@ -1,0 +1,15 @@
+<!-- meu_app/registro_servico_confirm_delete.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmar exclusão do Registro de Serviço</title>
+</head>
+<body>
+    <h1>Confirmar exclusão do Registro de Serviço</h1>
+    <p>Você está prestes a excluir o registro de serviço "{{ registro_servico }}". Tem certeza de que deseja continuar?</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Excluir">
+    </form>
+</body>
+</html>

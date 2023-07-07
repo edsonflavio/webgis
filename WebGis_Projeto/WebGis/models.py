@@ -32,7 +32,7 @@ class Ocorrencia(models.Model):
     oco_descricaoOcorrencia = models.CharField(max_length=120, verbose_name="Descrição do Serviço", help_text="Descreva de forma clara e sucinta o serviço.")
     oco_ipAddress = models.GenericIPAddressField(verbose_name="Endereço IP", help_text="Endereço IP do usuário que efetuou cadastro ou a última alteração")
     oco_status = models.BooleanField(default=True, verbose_name="Status do Serviço", help_text="Indica se o serviço está ativo ou não")
-    objetos = models.Manager()
+    objects = models.Manager()
     class Meta:
         db_table = 'Ocorrencia'
     def __str__(self):
@@ -54,3 +54,36 @@ class RegistroOcorrencia(models.Model):
         db_table = 'RegistroOcorrencia'
     def __str__(self):
         return f'{self.id}'
+
+from django.contrib.auth.models import User
+from django.contrib.gis.db import models
+from django.utils import timezone
+
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class Servico(models.Model):
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class RegistroServico(models.Model):
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    ip_origem = models.GenericIPAddressField()
+    data_registro = models.DateTimeField(default=timezone.now)
+    data_alteracao = models.DateTimeField(auto_now=True)
+    ponto = models.PointField(null=True, blank=True)
+    endereco = models.CharField(max_length=200, null=True, blank=True)
+    foto = models.ImageField(upload_to='fotos/', null=True, blank=True)
+
+    def __str__(self):
+        return f'RegistroServico {self.id}'
+
+
+    

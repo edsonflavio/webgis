@@ -4,7 +4,7 @@
 
 ./wait-for-database.sh ${PG_HOSTNAME}
 
-
+python manage.py makemigrations --no-input
 python manage.py migrate --no-input
 python manage.py collectstatic --no-input
 
@@ -21,4 +21,6 @@ else
 	:
 fi
 
-gunicorn GIS_Project.wsgi:application --bind 0.0.0.0:8000
+#gunicorn GIS_Project.wsgi:application --bind 0.0.0.0:8000
+#/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf -n
+python manage.py runserver 0.0.0.0:8000

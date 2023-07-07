@@ -1,156 +1,187 @@
-# Create your views here.
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.views import View
+from django.urls import reverse_lazy
+from django.views.generic import ( TemplateView, CreateView, UpdateView, DeleteView, ListView, DetailView )
+from django.contrib.gis.geos import GEOSGeometry
+from geopy.geocoders import Nominatim
+from WebGis.forms import ( CategoriaForm, ServicoForm, RegistroServicoForm )
+from WebGis.models import ( Categoria, Servico, RegistroServico )
 from django.contrib.gis.geos import Point
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
-from .forms import RegistroOcorrenciaForm
-from WebGis.models import Ocorrencia, TipoOcorrencia, RegistroOcorrencia
-from datetime import datetime, date, time
+import exifread
+import requests
 
 class IndexTemplateView(TemplateView):
-  template_name = "index.html"
+  template_name = "WebGis/index.html"
 
-class MapView(View):
-    def get(self, request):
-        form = RegistroOcorrenciaForm()
-        ocorrencias = RegistroOcorrencia.objects.all()
-        return render(request, 'mapa.html', {'form': form, 'Ocorrencias': ocorrencias})
+class CategoriaListView(ListView):
+    model = Categoria
+    template_name = 'WebGis/categoria_list.html'
+    context_object_name = 'categorias'
 
-class ListaServicos(ListView):
-    template_name = "lista_servicos.html"
-    model = Ocorrencia
-    context_object_name = "servicos"
+class CategoriaCreateView(LoginRequiredMixin, CreateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = 'WebGis/categoria_form.html'
+    success_url = reverse_lazy('WebGis:categoria_list')
 
-class ListaCategorias(ListView):
-    template_name = "lista_categorias.html"
-    model = TipoOcorrencia
-    context_object_name = "categorias"
+class CategoriaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = 'WebGis/categoria_form.html'
+    success_url = reverse_lazy('WebGis:categoria_list')
 
-class ListaRegistros(ListView):
-    template_name = "lista_registros.html"
-    model = RegistroOcorrencia
-    context_object_name = "registros"
+class CategoriaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Categoria
+    template_name = 'WebGis/categoria_confirm_delete.html'
+    success_url = reverse_lazy('WebGis:categoria_list')
 
-class RegistroOcorrenciaView(View):
-    def post(self, request):
-        if request.user.is_authenticated:
-            form = RegistroOcorrenciaForm(request.POST)
-            if form.is_valid():
-                nomeOcorrencia = form.cleaned_data['oco_nomeOcorrencia']
-                tipoOcorrencia = form.cleaned_data['oco_tipoOcorrencia']
-                dataCadastro = form.cleaned_data['oco_dataCadastro']
-                dataRegistro = form.cleaned_data['oco_dataRegistro']
-                descricaoOcorrencia = form.cleaned_data['oco_descricaoOcorrencia']
-                proxy_habilitado = request.META["HTTP_X_NGINX_PROXY"]
-                if proxy_habilitado == "true":
-                    ipAddress = request.META["HTTP_X_REAL_IP"]
-                else:
-                    ipAddress = request.META["REMOTE_ADDR"]
-                latitude = form.cleaned_data['latitude']
-                longitude = form.cleaned_data['longitude']
-                coordenadas = Point((longitude, latitude), srid=4326)
-                registroOcorrencia = RegistroOcorrencia(
-                    reg_Ocorrencia = tipoOcorrencia.set(),
-                    reg_localOcorrencia=coordenadas,
-                    reg_dataRegistro=dataRegistro,
-                    reg_dataOcorrencia=dataCadastro,
-                    reg_descricaoRegistro = descricaoOcorrencia,
-                    reg_ipAddress = ipAddress,
-                    reg_usuarioRegistro = request.user,
-                    )
-                registroOcorrencia.save()
-                return redirect('mapa')
-        else:
-            return redirect('login')
-        return render(request, 'mapa.html', {'form': form})
+class ServicoListView(ListView):
+    model = Servico
+    template_name = 'WebGis/servico_list.html'
+    context_object_name = 'servicos'
 
-# class Ocorrencia(View):
-#     def get(self, request, *args, **kwargs):
-#         return HttpResponse('Hello, World')
+class ServicoCreateView(LoginRequiredMixin, CreateView):
+    model = Servico
+    form_class = ServicoForm
+    template_name = 'WebGis/servico_form.html'
+    success_url = reverse_lazy('WebGis:servico_list')
+    
+class ServicoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Servico
+    form_class = ServicoForm
+    template_name = 'WebGis/servico_form.html'
+    success_url = reverse_lazy('WebGis:servico_list')
 
-#     def index(request):
-#         # Prints client IP address: "12.34.56.78"
-#         IP_Cliente = request.META["HTTP_X_FORWARDED_FOR"]
-#         # Prints NGINX IP address: "127.0.0.1", ie. localhost
-#         IP_Nginx = request.META["REMOTE_ADDR"]
-#         Hoje = datetime.today()
-#         Dia = Hoje.strftime("%d")
-#         Mes = Hoje.strftime("%m")
-#         Ano = Hoje.strftime("%Y")
-#         Hora = Hoje.strftime("%H")
-#         Min = Hoje.strftime("%M")
-#         Seg = Hoje.strftime("%S")
-#         ReturnMesg = f'Seja bem vindo - Seu IP é: <b> {IP_Cliente} </b>. <br> Seu acesso está sendo feito através do Servidor: <b> {IP_Nginx} </b>. <br> Hoje é dia: <b> {Dia}/{Mes}/{Ano} </b> e nosso horário é <b>{Hoje.strftime("%H:%M:%S")}h</b>.<br> Aqui começa seu WebGIS.'
-#         return HttpResponse(ReturnMesg)
+    def get_object(self, queryset=None):
+        servico = None
+        # Os campos {pk} e {slug} estão presentes em self.kwargs
+        id = self.kwargs.get(self.pk_url_kwarg)
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        if id is not None:
+            # Busca o serviço apartir do id
+            servico = Servico.objects.filter(id=id).first()
+        elif slug is not None:
+            # Pega o campo slug do Model
+            campo_slug = self.get_slug_field()
+            # Busca o serviço apartir do slug
+            servico = Servico.objects.filter(**{campo_slug: slug}).first()
+        # Retorna o objeto encontrado
+        return servico
 
-#     def home(request):
-#         return render(request, 'home.html')
+class ServicoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Servico
+    template_name = 'WebGis/servico_confirm_delete.html'
+    success_url = reverse_lazy('WebGis:servico_list')
 
-#     def have_proxy(proxy_habilitado:str)-> bool:
-#         if proxy_habilitado == "true":
-#             proxy = True
-#         else:
-#             proxy = False
-#         return proxy
-        
-#     def create_ocorrencia(request):
-#         '''
-#             Permite o cadastro/registro de cada ocorrência 
-#         '''
-#         #ipRegistro = request.META["HTTP_X_FORWARDED_FOR"]
-#         proxy_habilitado = request.META["HTTP_X_NGINX_PROXY"]
-#         if have_proxy(proxy_habilitado):
-#             ipRegistro = request.META["HTTP_X_REAL_IP"]
-#         else:
-#             ipRegistro = request.META["REMOTE_ADDR"]
-#         ReturnMesg = f'Ocorrência <b>Criada<b> vinda do IP: <b> {ipRegistro} </b>. <br>'
-#         return HttpResponse(ReturnMesg)
+class RegistroServicoCreateView(LoginRequiredMixin, CreateView):
+    model = RegistroServico
+    form_class = RegistroServicoForm
+    template_name = 'WebGis/registro_servico_form.html'
+    success_url = reverse_lazy('WebGis:registro_servico_detail')
 
-#     def list_ocorrencia(request):
-#         '''
-#             Lista as ocorrências registradas no sistema
-#         '''
-#         proxy_habilitado = request.META["HTTP_X_NGINX_PROXY"]
-#         if have_proxy(proxy_habilitado):
-#             ipRegistro = request.META["HTTP_X_REAL_IP"]
-#         else:
-#             ipRegistro = request.META["REMOTE_ADDR"]
-#         dataRegistro = datetime.now()
-#         ReturnMesg = f'Ocorrência <b>Criada<b> vinda do IP: <b> {ipRegistro} </b>. <br> Data da Criação: <b> {dataRegistro} <b><br>'
-#         return HttpResponse(ReturnMesg)
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        form.instance.ip_origem = self.request.META.get('REMOTE_ADDR')
+        if form.cleaned_data.get('local'):
+            geolocator = Nominatim(user_agent="my-app")
+            location = geolocator.geocode(form.cleaned_data['local'])
+            if location:
+                form.cleaned_data['latitude'] = location.latitude
+                form.cleaned_data['longitude'] = location.longitude
+                form.cleaned_data['ponto'] = f"POINT({location.longitude} {location.latitude})"
+        elif form.cleaned_data.get('foto'):
+            photo = form.cleaned_data['foto']
+            tags = exifread.process_file(photo.file)
+            if 'GPS GPSLatitude' in tags and 'GPS GPSLongitude' in tags:
+                latitude_ref = str(tags['GPS GPSLatitudeRef'])
+                latitude = str(tags['GPS GPSLatitude'])
+                longitude_ref = str(tags['GPS GPSLongitudeRef'])
+                longitude = str(tags['GPS GPSLongitude'])
+                latitude = eval(latitude.replace(" ", ","))
+                longitude = eval(longitude.replace(" ", ","))
+                latitude = latitude[0] + latitude[1] / 60 + latitude[2] / 3600
+                longitude = longitude[0] + longitude[1] / 60 + longitude[2] / 3600
+                if latitude_ref == 'S':
+                    latitude = -latitude
+                if longitude_ref == 'W':
+                    longitude = -longitude
+                form.cleaned_data['latitude'] = latitude
+                form.cleaned_data['longitude'] = longitude
+                form.cleaned_data['ponto'] = f"POINT({longitude} {latitude})"
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'pk': self.object.pk})
+    
+class RegistroServicoUpdateView(LoginRequiredMixin, UpdateView):
+    model = RegistroServico
+    form_class = RegistroServicoForm
+    template_name = 'WebGis/registro_servico_form.html'
+    success_url = reverse_lazy('WebGis:registro_servico_list')
 
-#     def update_ocorrencia(request):
-#         '''
-#             Atualiza uma ocorrência registrada no sistema
-#         '''
-#         proxy_habilitado = request.META["HTTP_X_NGINX_PROXY"]
-#         if have_proxy(proxy_habilitado):
-#             ipRegistro = request.META["HTTP_X_REAL_IP"]
-#         else:
-#             ipRegistro = request.META["REMOTE_ADDR"]
-#         dataRegistro = datetime.now()
-#         ReturnMesg = f'Ocorrência <b>Atualizada<b> vinda do IP: <b> {ipRegistro} </b>.<br> Data da Atualização: <b> {dataRegistro} <b> <br>'
-#         return HttpResponse(ReturnMesg)
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        form.instance.ip_origem = self.request.META.get('REMOTE_ADDR')
+        if form.cleaned_data.get('local'):
+            geolocator = Nominatim(user_agent="my-app")
+            location = geolocator.geocode(form.cleaned_data['local'])
+            if location:
+                form.cleaned_data['latitude'] = location.latitude
+                form.cleaned_data['longitude'] = location.longitude
+                form.cleaned_data['ponto'] = f"POINT({location.longitude} {location.latitude})"
+        elif form.cleaned_data.get('foto'):
+            photo = form.cleaned_data['foto']
+            tags = exifread.process_file(photo.file)
+            if 'GPS GPSLatitude' in tags and 'GPS GPSLongitude' in tags:
+                latitude_ref = str(tags['GPS GPSLatitudeRef'])
+                latitude = str(tags['GPS GPSLatitude'])
+                longitude_ref = str(tags['GPS GPSLongitudeRef'])
+                longitude = str(tags['GPS GPSLongitude'])
+                latitude = eval(latitude.replace(" ", ","))
+                longitude = eval(longitude.replace(" ", ","))
+                latitude = latitude[0] + latitude[1] / 60 + latitude[2] / 3600
+                longitude = longitude[0] + longitude[1] / 60 + longitude[2] / 3600
+                if latitude_ref == 'S':
+                    latitude = -latitude
+                if longitude_ref == 'W':
+                    longitude = -longitude
+                form.cleaned_data['latitude'] = latitude
+                form.cleaned_data['longitude'] = longitude
+                form.cleaned_data['ponto'] = f"POINT({longitude} {latitude})"
+        return super().form_valid(form)
 
-#     def delete_ocorrencia(request):
-#         '''
-#             Apaga uma ocorrência registrada no sistema
-#         '''
-#         proxy_habilitado = request.META["HTTP_X_NGINX_PROXY"]
-#         if have_proxy(proxy_habilitado):
-#             ipRegistro = request.META["HTTP_X_REAL_IP"]
-#         else:
-#             ipRegistro = request.META["REMOTE_ADDR"]
-#         dataRegistro = datetime.now()
-#         ReturnMesg = f'Ocorrência <b>Eliminada<b> vinda do IP: <b> {ipRegistro} </b>.<br> Data da Eliminaação: <b> {dataRegistro} <b> <br>'
-#         return HttpResponse(ReturnMesg)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('registro_servico_detail', kwargs={'pk': self.object.pk})
+    
+class RegistroServicoDeleteView(LoginRequiredMixin, DeleteView):
+    model = RegistroServico
+    template_name = 'WebGis/registro_servico_confirm_delete.html'
+    success_url = reverse_lazy('WebGis:registro_servico_list')
 
-#     def ocorrencia_form(request):
-#         if request.method == 'POST':
-#             latitude = request.POST['latitude']
-#             longitude = request.POST['longitude']
-#             coordenadas = Coordenadas(ponto='POINT({} {})'.format(longitude, latitude))
-#             coordenadas.save()
-#             return render(request, 'ocorrencias.html', {'coordenadas': coordenadas})
-#         return render(request, 'ocorrencias.html')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'pk': self.object.pk})
+    
+class RegistroServicoListView(ListView):
+    model = RegistroServico
+    #paginate_by = 10
+    template_name = 'WebGis/registro_servico_list.html'
+    context_object_name = 'registro_servicos'
+
+class RegistroServicoDetailView(DetailView):
+    model = RegistroServico
+    template_name = 'WebGis/registro_servico_detail.html'
+    context_object_name = 'registro_servicos'

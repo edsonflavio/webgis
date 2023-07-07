@@ -1,0 +1,15 @@
+<!-- meu_app/categoria_confirm_delete.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmar exclusão da Categoria</title>
+</head>
+<body>
+    <h1>Confirmar exclusão da Categoria</h1>
+    <p>Você está prestes a excluir a categoria "{{ categoria.nome }}". Tem certeza de que deseja continuar?</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Excluir">
+    </form>
+</body>
+</html>

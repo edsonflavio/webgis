@@ -1,0 +1,18 @@
+<!-- templates/meu_app/servico_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Serviços</title>
+</head>
+<body>
+    <h1>Lista de Serviços</h1>
+    <ul>
+        {% for servico in servicos %}
+            <li>{{ servico }}</li>
+        {% empty %}
+            <li>Nenhum serviço encontrado.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

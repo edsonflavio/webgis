@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ReporteUFPR</title>
+  <!-- Adicionando os arquivos CSS do Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ <!-- Adicionando os arquivos JS do Bootstrap -->
+ <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+{% block title %}Lista todos os Serviços disponíveis{% endblock %}
+
+{% block conteudo %}
+    
+<div class="container">
+    <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="card">
+    <div class="card-body">
+    <h5 class="card-title">Lista de Serviços Cadastrados</h5>
+    {% if servicos|length > 0 %}
+    <p class="card-text">Aqui está a lista de <code>Serviços</code> cadastrados.</p>
+        
+    <table>
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nome do Serviço</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Usuário</th>
+                <th>Data Registro</th>
+                <th>Data Alteração</th>
+                <th>Endereço IP</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servico in servicos %} 
+                <tr>
+                    <td>{{ servico.id }}</td>
+                    <td>{{ servico.oco_nomeOcorrencia }}</td>
+                    <td>{{ servico.oco_tipoOcorrencia }}</td>                        
+                    <td>{{ servico.oco_descricaoOcorrencia }}</td>                  
+                    <td>{{ servico.oco_usuario }}</td>
+                    <td>{{ servico.oco_dataCadastro }}</td>
+                    <td>{{ servico.oco_dataAlteracao }}</td>
+                    <td>{{ servico.oco_ipAddress }}</td>
+                    <td>{{ servico.oco_status }}</td>
+                    <td>
+                        <a href="{% url 'WebGis:update-servico' pk=servico.pk %}" class="btn btn-info">Atualizar</a>
+                        <a href="{% url 'WebGis:delete-servico' pk=servico.pk %}" class="btn btn-outline-danger">Excluir</button></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+            <div class="text-center mt-5 mb-5 jumbotron">
+                <h5>Nenhum <code>Serviço</code> cadastrado ainda.</h5>
+            </div>
+    {% endif %}
+    <hr />
+        <div class="text-right"> <a class="btn btn-primary" href="{% url 'WebGis:create-servico' %}">Cadastrar Serviço</a> </div>
+    </div>
+    </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+</body>
+</html>

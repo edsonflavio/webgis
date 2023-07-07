@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('', include('WebGis.urls')),
+    path('', include('WebGis.urls', namespace='WebGis')),
     path('admin/', admin.site.urls),
 ]

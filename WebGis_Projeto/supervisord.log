@@ -1,0 +1,14 @@
+2023-07-06 09:21:58,736 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2023-07-06 09:21:58,737 INFO supervisord started with pid 50
+2023-07-06 09:21:59,739 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:22:00,740 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:22:02,743 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:22:05,748 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:22:05,748 INFO gave up: gunicorn entered FATAL state, too many start retries too quickly
+2023-07-06 09:28:35,034 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2023-07-06 09:28:35,036 INFO supervisord started with pid 50
+2023-07-06 09:28:36,038 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:28:37,039 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:28:39,042 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:28:42,047 INFO spawnerr: can't find command '/usr/bin/gunicorn'
+2023-07-06 09:28:42,047 INFO gave up: gunicorn entered FATAL state, too many start retries too quickly
