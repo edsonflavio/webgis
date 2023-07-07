@@ -1,15 +1,7 @@
-<!-- meu_app/registro_servico_list.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title class="center">ReporteUFPR - Lista de Registros de Serviço</title>
-  <!-- Adicionando os arquivos CSS do Bootstrap -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Adicionando os arquivos JS do Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
-<body>
+{% extends 'WebGis/base.html' %}
+
+{% block content %}
+
     <h1>Lista de Registros de Serviço</h1>
     <ul>
         <table class="table table-striped">
@@ -30,14 +22,18 @@
             <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_registro }}</a></td>
             <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_alteracao }}</a></td>
             <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.ip_origem }}</a></td>
-            <td><figure class="figure"> <img src="{{ registro_servico.foto.url }}" class="figure-img img-fluid rounded" alt="{{ registro_servico.servico }}">
-                    <figcaption class="figure-caption">A caption for the above image.</figcaption>
-                </figure>
-            </td>
+            {% if registro_servico.foto is not None %}
+                <td><figure class="image-preview"> <img src={{ 'registro_servico.foto.url' }} class="figure-img img-fluid rounded" alt={{ "registro_servico.servico" }}>
+                    <figcaption class="figure-caption">{{ 'registro_servico.foto.url' }}.</figcaption>
+                    </figure>
+                </td>
+            {% endif %}
+            {% if registro_servico.foto is None %}
+                <td>"Foto Não Disponível</td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>
     </table>
     </ul>
-</body>
-</html>
+{% endblock content %}

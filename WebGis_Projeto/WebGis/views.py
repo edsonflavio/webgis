@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ( TemplateView, CreateView, UpdateView, DeleteView, ListView, DetailView )
 from django.contrib.gis.geos import GEOSGeometry
 from geopy.geocoders import Nominatim
-from WebGis.forms import ( CategoriaForm, ServicoForm, RegistroServicoForm )
-from WebGis.models import ( Categoria, Servico, RegistroServico )
+from WebGis.forms import ( CategoriaForm, ServicoForm, RegistroServicoForm, CampusForm )
+from WebGis.models import ( Categoria, Servico, RegistroServico, Campus )
 from django.contrib.gis.geos import Point
 import exifread
 import requests
@@ -19,6 +19,7 @@ class CategoriaListView(ListView):
     model = Categoria
     template_name = 'WebGis/categoria_list.html'
     context_object_name = 'categorias'
+    paginate_by = 10
 
 class CategoriaCreateView(LoginRequiredMixin, CreateView):
     model = Categoria
@@ -41,6 +42,7 @@ class ServicoListView(ListView):
     model = Servico
     template_name = 'WebGis/servico_list.html'
     context_object_name = 'servicos'
+    paginate_by = 10
 
 class ServicoCreateView(LoginRequiredMixin, CreateView):
     model = Servico
@@ -84,9 +86,9 @@ class RegistroServicoCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.usuario = self.request.user
         form.instance.ip_origem = self.request.META.get('REMOTE_ADDR')
-        if form.cleaned_data.get('local'):
+        if form.cleaned_data.get('campi'):
             geolocator = Nominatim(user_agent="my-app")
-            location = geolocator.geocode(form.cleaned_data['local'])
+            location = geolocator.geocode(form.cleaned_data['campi'])
             if location:
                 form.cleaned_data['latitude'] = location.latitude
                 form.cleaned_data['longitude'] = location.longitude
@@ -117,7 +119,7 @@ class RegistroServicoCreateView(LoginRequiredMixin, CreateView):
         return context
     
     def get_success_url(self):
-        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'id': self.id})
     
 class RegistroServicoUpdateView(LoginRequiredMixin, UpdateView):
     model = RegistroServico
@@ -161,7 +163,7 @@ class RegistroServicoUpdateView(LoginRequiredMixin, UpdateView):
         return context
     
     def get_success_url(self):
-        return reverse_lazy('registro_servico_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('registro_servico_detail', kwargs={'id': self.id})
     
 class RegistroServicoDeleteView(LoginRequiredMixin, DeleteView):
     model = RegistroServico
@@ -173,7 +175,7 @@ class RegistroServicoDeleteView(LoginRequiredMixin, DeleteView):
         return context
     
     def get_success_url(self):
-        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('WebGis:registro_servico_detail', kwargs={'id': self.id})
     
 class RegistroServicoListView(ListView):
     model = RegistroServico

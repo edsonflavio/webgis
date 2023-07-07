@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html>
+    <title>ReporteUFPR</title>
+    {% load static %}
+    <!-- Adicionando os arquivos CSS do Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Adicionando o arquivo CSS personalizado -->
+    <link rel="stylesheet" href="{% static 'WebGis/css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />     
+    <!-- Include Moment.js CDN -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<body>
+  <!-- Barra de menu no topo -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'WebGis:index'%}">ReporteUFPR</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+            <a class="nav-link" href="{% url 'WebGis:index'%}">Home</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" disabled href="{% url 'WebGis:index'%}">Sobre</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'WebGis:servico_list'%}">Serviços</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'WebGis:categoria_list'%}">Categorias</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'WebGis:registro_servico_list'%}">Registros</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>
+<!-- Imagem no topo -->
+<header class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Bem-vind(oa) ao ReporteUFPR</h1>
+        <p class="lead">ReporteUFPR - Sistema Voluntário de Colaboração na UFPR!</p>
+        <p class="lead">Aqui você pode colaborar com a Comunidade Universitária informando problemas e dificuldades encontradas no seu dia a dia na UFPR!</p>
+
+    </div>
+</header>
+
+{% block content%}
+{% endblock content%}
+{% block pagination %}
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+  {% endblock %}
+
+<!-- Adicionando os arquivos JS do Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</body>
+</html>

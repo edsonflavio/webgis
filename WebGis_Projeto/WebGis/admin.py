@@ -4,6 +4,8 @@ from django.db import models
 from WebGis import models
 # Register your models here.
 
-admin.site.register(models.Ocorrencia)
-admin.site.register(models.TipoOcorrencia)
-admin.site.register(models.RegistroOcorrencia)
+admin.site.register(models.Servico)
+admin.site.register(models.RegistroServico)
+admin.site.register(models.Categoria)
+admin.site.register(models.Campus)
+
