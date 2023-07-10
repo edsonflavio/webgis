@@ -1,7 +1,59 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
+from django.contrib.gis import admin
 from django.utils import timezone
+from django.http import HttpRequest, HttpResponse
+from django.utils.translation import gettext_lazy as _
+from django.contrib.gis.geos import GEOSGeometry
 
+class ReporteUsuario(models.Model):
+    class Genero(models.TextChoices):
+        MAS = 'M', _('Masculino')
+        FEM = 'F', _('Feminino')
+        OUT = 'O', _('Outro')
+
+    def get_genero(self) -> Genero:
+        # Get value from choices enum
+        return self.Genero[self.genero]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    genero = models.CharField(
+        max_length=2,
+        choices = Genero.choices,
+        default = Genero.OUT,
+        verbose_name = 'Gênero d(ao) Usuári(ao)',
+        help_text = 'Informe com qual Gênero você se Identifica.',)
+    aniversario = models.DateField(
+        verbose_name='Data de Aniversario do Usuario',
+        help_text='Informe a Data do Seu Aniversário',
+        null=False,
+        blank=True)
+
+class UnidadeGestora(models.Model):
+    usuario = models.OneToOneField(ReporteUsuario, verbose_name=_("usuarios_reporte"), on_delete=models.CASCADE)
+    nome_ug = models.CharField(
+        max_length=60,
+        verbose_name='Nome da Unidade Gestora',
+        help_text='Informe o Nome da Unidade Gestora')
+    descricao = models.TextField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name='Descrição da Unidade Gestora',
+        help_text='Descreva sucintamente a respeitor desta Unidade Gestora'
+    )
+
+    def __str__(self):
+        return self.nome_ug
+
+'''
+class Task(models.Model):
+    class Meta:
+        permissions = [
+            ("change_task_status", "Pode Alterar o Status da Ocorrência"),
+            ("close_task", "Pode Encerrar uma Ocorrência marcando como Finalizada"),
+        ]
+'''
 class Categoria(models.Model):
     nome = models.CharField(
         max_length=40, 
@@ -35,9 +87,14 @@ class Servico(models.Model):
         return self.nome
 
     def get_absolute_url(self):
-            return reverse("servico", kwargs={"id": self.id})
+            return reverse("servico", kwargs={"pk": self.id})
 
 class Campus(models.Model):  
+    class Meta:
+        ordering = ["nome"]
+        verbose_name = "Identifação do Campus da UFPR"
+        verbose_name_plural = 'Campi'
+
     nome = models.CharField(
         verbose_name="Nome do Campus",
         help_text="Informe o Nome do Campus mais próximo",
@@ -48,20 +105,17 @@ class Campus(models.Model):
     ponto_central = models.PointField(
         verbose_name="Centróide do Campus",
         null=True, 
-        blank=False)
+        blank=False,
+        srid=4326,
+        geography=True)
     
-    class Meta:
-        ordering = ["nome"]
-        verbose_name = "Identifação do Campus da UFPR"
-        verbose_name_plural = 'Campi'
-
     def __str__(self):
         return self.nome
 
 class RegistroServico(models.Model):
     servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    campi = models.ForeignKey(Campus, on_delete=models.CASCADE)
+    campi   = models.ForeignKey(Campus, on_delete=models.CASCADE)
     descricao = models.TextField(max_length=500, 
                                  help_text='Descreva sucintamente a sua demanda/ocorrência (até 500 caracteres)',
                                  verbose_name="Descreve a ocorrência",
@@ -81,9 +135,10 @@ class RegistroServico(models.Model):
     ponto = models.PointField(
         null=True, 
         blank=True,
+        srid=4326,
         verbose_name='Localização aproximada da Ocorrência',
         help_text='Recebe as coordenadas aproximadas da Ocorrência')
-    foto = models.ImageField(
+    foto = models.FileField(
         upload_to='fotos/', 
         null=True, 
         blank=True,
@@ -97,4 +152,3 @@ class RegistroServico(models.Model):
 
     def __str__(self):
         return f'{self.servico}'
-    

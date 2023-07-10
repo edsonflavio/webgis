@@ -5,29 +5,41 @@
 <!-- Script para inicializar o mapa e capturar a latitude e longitude -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      //var map = L.map('map').setView([-25.45246 , -49.23398], 14);
-      var map = L.map('map').locate({setView: true}, 16);
+      var map = L.map('map').setView([-25.45246 , -49.23398], 14);
+      //var map = L.map('map').locate({setView: true}, 16);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
-      var marker = L.marker([0, 0], { draggable: true }).addTo(map);
+//      var marker = L.marker([-25.45246 , -49.23398], { draggable: true }).addTo(map);
+//      var popup = L.popup().setContent("Esta é sua Localização <br> Atual e Aproximada!!!");
       var popup = L.popup().setContent("Esta é sua Localização <br> Atual e Aproximada!!!");
+      var marker = L.marker([-25.45246 , -49.23398], {draggable: true}).addTo(map);
       function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            marker.setLatLng([latitude, longitude]);
-            popup.setLatLng([latitude, longitude]);
-            marker.bindPopup(popup).openPopup();
-            popup.openOn(map);
-          });
-        } else {
-          alert('Geolocalização não é suportada pelo seu navegador.');
-        }
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              if(marker){
+                map.removeLayer(marker);
+                document.getElementById('latitude').value = "latitude";
+                document.getElementById('latitude').value = "longitude";      
+              }
+              if(popup){
+                map.removeLayer(popup);
+              };
+              marker.setLatLng([latitude, longitude]);
+              document.getElementById('latitude').value = "latitude";
+              document.getElementById('latitude').value = "longitude";      
+              marker.addTo(map);
+              popup.setLatLng([latitude, longitude]);
+              popup.setContent("Esta é sua Localização <br> Atual e Aproximada!!!")
+              marker.bindPopup(popup).openPopup();
+              popup.openOn(map);
+            });
+          } else {
+            alert('Geolocalização não é suportada pelo seu navegador.');        }
       }
-      getLocation();
-   });
+    });
 
   </script>
 
@@ -41,5 +53,9 @@
       </div>
     </div>
   </section>
-  <a class="btn btn-primary" href="{% url 'WebGis:registro_servico_create'%}" role="button"> Clique aqui para Registrar uma Ocorrência!!!</a>
-{% endblock content %}
+<section id="botao">
+  <div class="container align=center">
+    <a class="btn btn-primary" href="{% url 'WebGis:registro_servico_create'%}" role="button"> Clique aqui para Registrar uma Ocorrência!!!</a>
+  </div>
+</section>
+  {% endblock content %}

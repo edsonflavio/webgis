@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, sys
 from os import environ
 
 #env = environ.Env()
@@ -26,7 +26,6 @@ from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -44,10 +43,12 @@ POSTGRES_DBNAME=os.getenv("PG_DBNAME", "postgres")
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 DEBUG=os.getenv("DEBUG_MODE", "True")
-
 ALLOWED_HOSTS = ['django_app', 'localhost', '200.17.210.138', '*']
 
 # Application definition
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,8 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'django_flatpickr',
+    'rest_framework',
     'GIS_Project',
     'WebGis',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +74,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
+
 
 ROOT_URLCONF = 'GIS_Project.urls'
 TEMPLATES = [
@@ -147,6 +154,8 @@ USE_TZ = True
 
 STATIC_ROOT = '/static/'
 STATIC_URL = 'static/'
+MEDIA_URL = 'fotos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'fotos')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -156,4 +165,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Admin Config
 DJANGO_SUPERUSER_USERNAME=os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
 DJANGO_SUPERUSER_PASSWORD=os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin")
-CSRF_TRUSTED_ORIGINS = ['http://200.17.210.138', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['http://200.17.210.138', 'http://localhost', 'http://200.17.225.210']

@@ -18,18 +18,18 @@
         {% for registro_servico in registro_servicos %}
         <tr>
             <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.id }}</a></td>
-            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.servico }}</a></td>
-            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_registro }}</a></td>
-            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.data_alteracao }}</a></td>
-            <td><a href="{% url 'WebGis:registro_servico_detail' registro_servico.id %}">{{ registro_servico.ip_origem }}</a></td>
-            {% if registro_servico.foto is not None %}
-                <td><figure class="image-preview"> <img src={{ 'registro_servico.foto.url' }} class="figure-img img-fluid rounded" alt={{ "registro_servico.servico" }}>
-                    <figcaption class="figure-caption">{{ 'registro_servico.foto.url' }}.</figcaption>
-                    </figure>
+            <td>{{ registro_servico.servico }}</td>
+            <td>{{ registro_servico.data_registro }}</td>
+            <td>{{ registro_servico.data_alteracao }}</td>
+            <td>{{ registro_servico.ip_origem }}</td>
+            {% if registro_servico.foto %}
+                <td>
+                    <a href= {{ registro_servico.foto.url}}>
+                        {{ registro_servico.servico}}
+                    </a>
                 </td>
-            {% endif %}
-            {% if registro_servico.foto is None %}
-                <td>"Foto Não Disponível</td>
+            {% else%}
+                <td>Foto Não Disponível</td>
             {% endif %}
         </tr>
         {% endfor %}

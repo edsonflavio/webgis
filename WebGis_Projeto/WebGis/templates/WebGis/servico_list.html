@@ -1,6 +1,8 @@
 <!-- templates/meu_app/servico_list.html -->
-{% extends "WebGis/base.html" %}
-{% block content%}
+{% extends 'WebGis/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
     <h1>Lista de Serviços</h1>
     <ul>
         {% for servico in servicos %}

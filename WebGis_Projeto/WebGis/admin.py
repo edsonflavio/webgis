@@ -1,11 +1,27 @@
 from django.contrib import admin
 from django.db import models
-#from . import models
-from WebGis import models
-# Register your models here.
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from WebGis.models import ReporteUsuario, UnidadeGestora, Servico, Categoria, Campus, RegistroServico
 
-admin.site.register(models.Servico)
-admin.site.register(models.RegistroServico)
-admin.site.register(models.Categoria)
-admin.site.register(models.Campus)
+# Define an inline admin descriptor for Employee model
+# which acts a bit like a singleton
 
+class ReporteUsuarioInline(admin.StackedInline):
+    model = ReporteUsuario
+    can_delete = False
+    verbose_name_plural = "reporte_usuarios"
+
+# Define a new User admin
+class UserAdmin(BaseUserAdmin):
+    inlines = [ReporteUsuarioInline]
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+admin.site.register(Servico)
+admin.site.register(RegistroServico)
+admin.site.register(Categoria)
+admin.site.register(Campus)
+admin.site.register(UnidadeGestora)

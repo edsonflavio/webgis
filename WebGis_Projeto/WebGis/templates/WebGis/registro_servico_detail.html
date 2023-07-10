@@ -1,10 +1,7 @@
 <!-- meu_app/registro_servico_detail.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Detalhes do Registro de Serviço</title>
-</head>
-<body>
+{% extends 'WebGis/base.html' %}
+
+{% block  content %}
     <h1>Detalhes do Registro de Serviço</h1>
     <p>ID: {{ registro_servicos.id }}</p>
     <p><b>Serviço: </b>{{ registro_servicos.servico }}</p>
@@ -14,10 +11,24 @@
     <p>Data de Alteração: {{ registro_servicos.data_alteracao }}</p>
     <p>Ponto: {{ registro_servicos.ponto }}</p>
     <p>Endereço: {{ registro_servicos.endereco }}</p>
-    {%if registro_servico.foto is not None%}
-        <p>Foto: <img src="{{ registro_servicos.foto.url }}" alt="Foto"></p>
-    {%else %}
-        <p>Foto: Não cadastrada.</p>
+    {% if registro_servicos.foto %}
+        <p><figure class="image-preview"> 
+            <img src={{ registro_servicos.foto.url }} 
+            class="figure-img img-fluid rounded" 
+            alt={{ "registro_servicos.servico" }}>
+            <figcaption class="figure-caption">
+                {{ registro_servicos.foto.url }} 
+            </figcaption>
+            </figure>
+        </p>
+        <p>
+            Foto:
+            <a href= {{ registro_servicos.foto.url}}>
+            {{ registro_servicos.servico}}
+            </a>
+        </p>
+    {% else%}
+        <p>Foto Não Disponível</p>
     {% endif %}
-</body>
-</html>
+
+{% endblock content %}

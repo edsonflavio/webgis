@@ -1,11 +1,13 @@
 <!-- templates/meu_app/servico_list.html -->
-
-<!DOCTYPE html>
+{% extends 'WebGis/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
 <html>
 <head>
     <title>Lista das Categorias</title>
 </head>
 <body>
+{% block content %}
     <h1>Lista das Categorias Disponíveis</h1>
     <ul>
         {% for categoria in categorias %}
@@ -14,5 +16,6 @@
             <li>Nenhum serviço encontrado.</li>
         {% endfor %}
     </ul>
+{% endblock content %}
 </body>
 </html>

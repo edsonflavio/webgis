@@ -1,5 +1,5 @@
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from WebGis.views import (
     CategoriaListView, CategoriaCreateView, CategoriaUpdateView, CategoriaDeleteView,
@@ -25,4 +25,7 @@ urlpatterns = [
     path('registro_servico/delete/<int:pk>/', RegistroServicoDeleteView.as_view(), name='registro_servico_delete'),
     path('registro_servico/', RegistroServicoListView.as_view(), name='registro_servico_list'),
     path('registro_servico/detail/<int:pk>/', RegistroServicoDetailView.as_view(), name='registro_servico_detail'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] 
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

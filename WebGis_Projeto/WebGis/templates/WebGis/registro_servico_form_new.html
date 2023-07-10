@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
     {% load static %}
+    {{ form.media }}  {# Adds all flatpickr JS/CSS files from CDN #}
 <head>
     <title>Formulário de Registro de Serviço</title>
     <!-- Adicionando os arquivos CSS do Bootstrap -->
@@ -15,7 +16,9 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        var map = L.map('map').setView([-25.490, -49.300], 12);
+        var map = L.map('map').setView([-25.45246 , -49.23398], 15);
+        //var map = L.map('map').locate({setView: true}, 16);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             maxZoom: 18,
@@ -25,7 +28,7 @@
         function onMapClick(e) {
             popup
                 .setLatLng(e.latlng)
-                .setContent("Coordenadas Geográficas " + e.latlng.toString())
+                .setContent("Coordenadas Geográficas Escolhidas <br> " + e.latlng.toString())
                 .openOn(map);
         }
         map.on('click', onMapClick);
@@ -36,7 +39,7 @@
             document.getElementById('latitude').value = latLng.lat;
         });
         var geocoder = L.Control.geocoder({
-            placeholder: 'Digite um local...',
+            placeholder: 'Procure pelo Local...',
             defaultMarkGeocode: false,
             collapsed: false,
         }).on('markgeocode', function (e) {
@@ -45,7 +48,7 @@
             marker.setLatLng(latLng).addTo(map);
             document.getElementById('longitude').value = latLng.lng;
             document.getElementById('latitude').value = latLng.lat;
-            document.getElementById('campi').value = placeName;
+            document.getElementById('endereco').value = placeName;
         }).addTo(map);
         map.on('click', function (e) {
             marker.setLatLng(e.latlng).addTo(map);
@@ -67,71 +70,62 @@
       </div>
     </div>
   </section>
-    <!-- Formulário -->
+  <section id="form">
+    <div class="container">
+  <!-- Formulário -->
     <h2>Registre aqui sua Ocorrência</h2>
     <form enctype="multipart/form-data" method="POST">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="data_registro">Data da Ocorrência</label>
-        <input type="datetime-local" class="form-control" id={{ "form.data_registro" }} placeholder="Digite a data da ocorrência">
-      </div>
-      <div class="form-group">
-          <label for="description">Tipo de Demanda</label>
-          <select name="servico" id="servico">
-              {% for s in form.servico %}
-                  <option value={{"s"}}>{{s}}</option>
-              {% endfor %}
-          </select>                  
-      </div>
-      <div class="form-group">
-          <label for="description">Nome do Campi</label>
-          <select name="campi" id="campi">
-              {% for c in form.campi %}
-                  <option value={{"c"}}>{{c}}</option>
-              {% endfor %}
-          </select>                  
-      </div>
-      <div class="form-group">
-        <label for="description">Usuário</label>
-        <select name="usuario" id="usuario">
-            {% for u in form.usuario %}
-                <option value={{"u"}}>{{u}}</option>
+        {% csrf_token %}
+        {% if form.errors %}
+            {{ form.errors }} <!-- display the form errors if they exist -->
+        {% endif %}
+        <div class="form-group">
+          <label for="data_registro">Data da Ocorrência</label>
+          {{ form.data_registro }}
+        </div>
+        <div class="form-group">
+            <label for="servico">Tipo de Demanda</label>
+            <select name="servico" id="servico">
+                {% for servico in form.servico %}
+                    {{ servico }}
+                {% endfor %}
+            </select>                  
+        </div>
+        <div class="form-group">
+            <label for="campi">Nome do Campi</label>
+            <select name="campi" id="campi">
+            {% for campi in form.campi %}
+                {{ campi }}
             {% endfor %}
-        </select>                  
-    </div>  
-
-      <div class="form-group">
-          <label for="descricao">Descreva o Problema</label>
-          <textarea class="form-control" id={{ "form.descricao" }} rows="5" placeholder="Digite de forma sucinta e precisa a descrição do problema"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="foto">Tire uma Foto</label>
-        <input type="file" class="form-control" id="foto" accept="image/*" onchange="loadFile(event)">
-        <p><img id="output" width="200"/></p>
-        <script>
-            var loadFile = function(event) {
-                var image = document.getElementById('output');
-                image.src=URL.createObjectURL(event.target.files[0]);
-            };
-        </script>
-      </div>
-      <div class="form-group">
-        <label for="latitude">Latitude</label>
-        <input type="text" class="form-control" id="latitude" hidden placeholder="Latitude da Ocorrência">
-      </div>
-      <div class="form-group">
-        <label for="longitude">Longitude</label>
-        <input type="text" class="form-control" id="longitude" hidden placeholder="Longitude da Ocorrência">
-      </div>
-      <input  type="submit" class="btn btn-success" value="Salvar">
-    </form>  
-    <!-- Adicionando os arquivos JS do Bootstrap -->
+            </select>                  
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descreva o Problema</label>
+            <textarea class="form-control" id={{ "form.descricao" }} rows="5" placeholder="Digite de forma sucinta e precisa a descrição do problema"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="foto">Insira uma Foto</label>
+          <input type="file" class="form-control" id="foto" accept="image/*">
+        </div>
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+        <input type="hidden" id="ip_origem" name="ip_origem">
+        <input type="hidden" id="usuario" name="usuario">
+        <input type="hidden" id="endereco" name="endereco">
+        <input  type="submit" class="btn btn-success" value="Salvar">
+      </form>
+    </div>
+    </section>
+ 
+      <!-- Adicionando os arquivos JS do Bootstrap -->
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Make sure you put this AFTER Leaflet's CSS -->
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
       <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<!--
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+-->
     </script>
     </body>
 </html>
