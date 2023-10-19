@@ -56,6 +56,6 @@ ssh-import-id==5.11
 #ubuntu-advantage-tools==8001
 #ufw==0.36.1
 #unattended-upgrades==0.1
-urllib3==1.26.15
+urllib3==1.26.17
 wadllib==1.3.6
 zipp==1.0.0
