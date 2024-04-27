@@ -50,7 +50,7 @@ ratelim==0.1.6
 requests==2.31.0
 SecretStorage==3.3.1
 six==1.16.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 ssh-import-id==5.11
 #systemd-python==234
 #ubuntu-advantage-tools==8001
