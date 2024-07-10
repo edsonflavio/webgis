@@ -58,4 +58,4 @@ ssh-import-id==5.11
 #unattended-upgrades==0.1
 urllib3==1.26.18
 wadllib==1.3.6
-zipp==1.0.0
+zipp==3.19.1
