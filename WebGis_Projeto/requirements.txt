@@ -47,7 +47,7 @@ pyparsing==2.4.7
 #python-apt==0.7.8
 PyYAML==5.4.1
 ratelim==0.1.6
-requests==2.31.0
+requests==2.32.0
 SecretStorage==3.3.1
 six==1.16.0
 sqlparse==0.5.0
