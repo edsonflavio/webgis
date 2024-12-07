@@ -19,7 +19,7 @@ future==0.18.3
 #numpy==1.21.5
 numpy==1.24.3
 #GDAL==3.7.0
-GDAL==3.2.2.1
+GDAL==3.9.3
 geocoder==1.38.1
 geographiclib==2.0
 geopy==2.3.0
