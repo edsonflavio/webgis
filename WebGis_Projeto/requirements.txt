@@ -28,7 +28,7 @@ httplib2==0.20.2
 idna==3.7
 importlib-metadata==4.6.4
 jeepney==0.7.1
-Jinja2==3.1.4
+Jinja2==3.1.5
 keyring==23.5.0
 launchpadlib==1.10.16
 lazr.restfulclient==0.14.4
