@@ -1,5 +1,6 @@
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import Ocorrencia
+from django.urls import reverse_lazy
 
 #class MapView(View):
 #    def get(self, request):
