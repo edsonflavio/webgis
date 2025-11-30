@@ -23,7 +23,7 @@ GDAL==3.9.3
 geocoder==1.38.1
 geographiclib==2.0
 geopy==2.3.0
-gunicorn==22.0.0
+gunicorn==23.0.0
 httplib2==0.20.2
 idna==3.7
 importlib-metadata==4.6.4
