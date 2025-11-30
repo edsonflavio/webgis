@@ -1,3 +1,5 @@
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+
 #class MapView(View):
 #    def get(self, request):
 #        form = RegistroOcorrenciaForm()
