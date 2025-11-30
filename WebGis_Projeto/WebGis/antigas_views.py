@@ -1,4 +1,5 @@
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from .models import Ocorrencia
 
 #class MapView(View):
 #    def get(self, request):
