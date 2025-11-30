@@ -2,6 +2,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import Ocorrencia
 from django.urls import reverse_lazy
 from django.urls import reverse
+from .models import TipoOcorrencia
 
 #class MapView(View):
 #    def get(self, request):
