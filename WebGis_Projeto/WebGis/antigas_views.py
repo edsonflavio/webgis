@@ -3,6 +3,8 @@ from .models import Ocorrencia
 from django.urls import reverse_lazy
 from django.urls import reverse
 from .models import TipoOcorrencia
+from .models import RegistroOcorrencia
+
 
 #class MapView(View):
 #    def get(self, request):
