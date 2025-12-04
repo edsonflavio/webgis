@@ -1,3 +1,4 @@
+'''
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import Ocorrencia
 from django.urls import reverse_lazy
@@ -69,7 +70,7 @@ class ListaRegistros(ListView):
     template_name = "WebGis/lista_registros.html"
     model = RegistroOcorrencia
     context_object_name = "registros"
-'''
+
 class RegistroOcorrenciaView(CreateView):
     def post(self, request):
         if request.user.is_authenticated:
