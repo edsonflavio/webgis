@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.geos import GEOSGeometry
+from django.urls import reverse_lazy
 
 class ReporteUsuario(models.Model):
     class Genero(models.TextChoices):
