@@ -69,7 +69,7 @@ class ListaRegistros(ListView):
     template_name = "WebGis/lista_registros.html"
     model = RegistroOcorrencia
     context_object_name = "registros"
-
+'''
 class RegistroOcorrenciaView(CreateView):
     def post(self, request):
         if request.user.is_authenticated:
@@ -102,7 +102,7 @@ class RegistroOcorrenciaView(CreateView):
         else:
             return redirect('login')
         return render(request, 'mapa.html', {'form': form})
-
+'''
 # class Ocorrencia(View):
 #     def get(self, request, *args, **kwargs):
 #         return HttpResponse('Hello, World')
