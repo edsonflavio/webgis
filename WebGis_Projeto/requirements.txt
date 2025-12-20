@@ -13,7 +13,7 @@ distro==1.7.0
 distro-info
 Django==4.1.13
 environ==1.0
-filelock==3.10.0
+filelock==3.20.1
 folium==0.14.0
 future==0.18.3
 #numpy==1.21.5
